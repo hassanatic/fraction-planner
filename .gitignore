@@ -1,0 +1,7 @@
+bin/
+obj/
+node_modules/
+backend/FractionPlanner/wwwroot/*
+!backend/FractionPlanner/wwwroot/.gitkeep
+test-results/
+playwright-report/
