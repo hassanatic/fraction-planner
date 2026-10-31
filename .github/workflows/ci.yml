@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet test backend/FractionPlanner.Tests/FractionPlanner.Tests.csproj --nologo
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build the SPA into the API's wwwroot
+        working-directory: frontend
+        run: npm install && npm run build
+      - name: Install Playwright
+        working-directory: e2e
+        run: npm install && npx playwright install --with-deps chromium
+      - name: End-to-end tests
+        working-directory: e2e
+        run: npx playwright test
+        env:
+          CI: "true"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: e2e/test-results
