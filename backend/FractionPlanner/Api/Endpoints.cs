@@ -15,7 +15,7 @@ public static class Endpoints
     {
         var api = app.MapGroup("/api/courses").WithTags("Courses");
 
-        api.MapGet("/", (CourseProjection views) => Results.Ok(views.All()))
+        api.MapGet("", (CourseProjection views) => Results.Ok(views.All()))
             .WithName("ListCourses")
             .Produces<IReadOnlyList<CourseView>>();
 
@@ -30,7 +30,7 @@ public static class Endpoints
             .WithName("GetCourseEvents")
             .Produces<IReadOnlyList<EventView>>();
 
-        api.MapPost("/", (CreateCourseRequest request, CourseCommands commands, CourseProjection views, TimeProvider clock) =>
+        api.MapPost("", (CreateCourseRequest request, CourseCommands commands, CourseProjection views, TimeProvider clock) =>
                 Handle(() =>
                 {
                     var start = request.StartDate ?? DateOnly.FromDateTime(clock.GetUtcNow().UtcDateTime);
